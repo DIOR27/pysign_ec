@@ -30,4 +30,13 @@ python3 main.py path/to/pdf path/to/p12_file "password_for_p12_file" "text_to_se
 
 ### Output
 
-The script will generate a new PDF file with the digital signature added.
+The script will generate a new PDF file with the digital signature added showing the followin output:
+```bash
+Signed PDF saved at 'Path/to/file.pdf'.
+```
+
+## Screenshots
+
+![result](/result.png)
+
+![watermark](/watermark.png)

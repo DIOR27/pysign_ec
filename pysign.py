@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import re
 import tempfile
 from datetime import datetime
@@ -85,7 +86,7 @@ def sign_pdf(pdf_path, p12_path, password, sign_text, right=0):
         result = findResults[0]
         x = int(result.Positions[0].X) + 50
         y = int(result.Positions[0].Y)
-        y = page_size.Height - y - 60
+        y = page_size.Height - y - 70
     except Exception:
         print(f"The term '{sign_text}' was not found in the document.")
         return False
@@ -96,8 +97,16 @@ def sign_pdf(pdf_path, p12_path, password, sign_text, right=0):
     datau, datas = sign_pdf_data(password, p12file, pdf_file, PDF_SIGN_LOCATION, last_page_num)
     signed_pdf = datau + datas
 
-    with open(pdf_path, "wb") as file:
+    base, ext = os.path.splitext(pdf_path)
+    signed_pdf_path = f"{base}_signed{ext}"
+
+    # Guardar el PDF firmado en un nuevo archivo
+    with open(signed_pdf_path, "wb") as file:
         file.write(signed_pdf)
+
+    print(f"Signed PDF saved as '{signed_pdf_path}'.")
+
+    return True
 
 def sign_pdf_data(password, p12file, pdf, sign_location, last_page):
     date = datetime.now(pytz.timezone("America/Guayaquil")).isoformat()
@@ -117,13 +126,10 @@ def sign_pdf_data(password, p12file, pdf, sign_location, last_page):
         author_name = author_name[0]
 
         data.append(f"FIRMADO POR: {author_name}")
-        data.append("RAZON:")
-        data.append("LOCALIZACION:")
         data.append(f"FECHA: {date}")
-        data.append("VALIDAR CON: www.firmadigital.gob.ec\n3.1.1")
 
     date = datetime.now(pytz.timezone("America/Guayaquil")).strftime("%Y%m%d%H%M%S")
-    qr_image = generate_qr_code(f"{data[0]}\n{data[1]}\n{data[2]}\n{data[3]}\n{data[4]}")
+    qr_image = generate_qr_code(f"{data[0]}\n{data[1]}")
     text_to_add = f"Firmado electrónicamente por:\n{author_name}"
     qr_with_text_image = add_text_to_qr(qr_image, text_to_add)
 

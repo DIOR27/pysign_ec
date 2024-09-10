@@ -34,13 +34,11 @@ def main():
         return
 
     # Add watermark to PDF (This will override any existing signature)
-    watermark_message = "TOP SECRET"
-    add_watermark(pdf_path, watermark_message)
+    # watermark_message = "TOP SECRET"
+    # add_watermark(pdf_path, watermark_message)
 
     # Firmar el PDF
     sign_pdf(pdf_path, p12_path, password, sign_text)
-    print(f"Signed PDF saved at '{pdf_path}'.")
-
 
 if __name__ == "__main__":
     main()
