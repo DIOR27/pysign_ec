@@ -1,6 +1,6 @@
 # Digital Signature Script
 
-This script allows you to add a digital signature to a PDF file. It also provides an option to add a watermark to the PDF.
+This script allows you to add a digital signature to a PDF file like FirmaEC does. It also provides an option to add a watermark to the PDF.
 
 ## Prerequisites
 
