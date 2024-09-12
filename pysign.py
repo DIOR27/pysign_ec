@@ -55,7 +55,7 @@ def add_watermark(pdf_path, message):
     with open(pdf_path, "wb") as file:
         file.write(modified_pdf_content)
 
-def sign_pdf(pdf_path, p12_path, password, sign_text, right=0):
+def sign_pdf(pdf_path, p12_path, password, sign_text, x_scroll=50, y_scroll=-60):
     with open(pdf_path, "rb") as file:
         pdf_content = file.read()
     with open(p12_path, "rb") as file:
@@ -81,18 +81,21 @@ def sign_pdf(pdf_path, p12_path, password, sign_text, right=0):
     findOptions.Parameter = TextFindParameter.WholeWord
     textFinder.Options = findOptions
 
-    try:
-        findResults = textFinder.Find(sign_text)
-        result = findResults[0]
-        x = int(result.Positions[0].X) + 50
-        y = int(result.Positions[0].Y)
-        y = page_size.Height - y - 70
-    except Exception:
+    findResults = textFinder.Find(sign_text)
+    if not findResults:
         print(f"The term '{sign_text}' was not found in the document.")
         return False
 
+    result = findResults[0]
+    x = int(result.Positions[0].X)
+    x += x_scroll
+    y = int(result.Positions[0].Y)
+
+    y = page_size.Height - y
+    y += y_scroll
+    
     doc.Dispose()
-    PDF_SIGN_LOCATION = (x + right, y)
+    PDF_SIGN_LOCATION = (x, y)
 
     datau, datas = sign_pdf_data(password, p12file, pdf_file, PDF_SIGN_LOCATION, last_page_num)
     signed_pdf = datau + datas
